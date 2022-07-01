@@ -1,3 +1,12 @@
+body{
+  height: 100vh;
+}
+
+#formulaField, #displayField {
+  background-color: lightgrey;
+  text-align: right;
+}
+
 #keypad {
   display: grid;
   grid-template-columns: repeat(4, 50px);
