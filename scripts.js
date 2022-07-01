@@ -79,13 +79,16 @@ class Keypad extends React.Component {
         <button id="tripleZero" value="000" onClick={this.props.handleNumber}>
           000
         </button>
-        <button id="decimal" value=".">
+        <button id="decimal" value="." onClick={this.props.handleDecimal}>
           .
         </button>
       </div>
     );
   }
 }
+
+let operatorsCount = 0;
+let decimalsCount = 0;
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -97,6 +100,7 @@ class App extends React.Component {
     };
     this.handleNumber = this.handleNumber.bind(this);
     this.handleOperator = this.handleOperator.bind(this);
+    this.handleDecimal = this.handleDecimal.bind(this);
     this.handleEqual = this.handleEqual.bind(this);
     this.handleErase = this.handleErase.bind(this);
     this.clearAll = this.clearAll.bind(this);
@@ -109,6 +113,7 @@ class App extends React.Component {
   }*/
 
   handleNumber(e) {
+    operatorsCount = 0;
     const operatorCheck = this.state.previousVal.toString();
     const output = document.getElementById("display").innerHTML;
     const value = e.target.value;
@@ -119,8 +124,20 @@ class App extends React.Component {
     if (operatorCheck.match(/[\/+*-]/) != null) {
       //console.log('OPERATOR DETECTED')
       this.setState((state) => ({
-        val:  value,
+        val: value,
         previousVal: 0,
+        formula: `${this.state.formula}` + `${value}`
+      }));
+    }
+    else if ((value == 0 || value == '000') && this.state.val == 0) { //impide meter ceros cuando no hay numeros
+      this.setState((state) => ({
+        val: 0
+      }));
+    }
+    else if (this.state.previousVal === "") { //evita el 0 a la izq al escribir valores
+      this.setState((state) => ({
+        val: value,
+        previousVal: parseInt(this.state.val, 10),
         formula: `${this.state.formula}` + `${value}`
       }));
     }
@@ -131,35 +148,60 @@ class App extends React.Component {
         formula: `${this.state.formula}` + `${value}`
       }));
     }
+    console.log(`number + ${value}`);
     console.log(this.state);
   }
 
   handleOperator(e) {
+    decimalsCount = 0;
+    operatorsCount += 1;
     const value = e.target.value;
-    this.setState((state) => ({
-      previousVal: value,
-      val: value,
-      formula: `${this.state.formula}` + `${value}`
-    }));
+    if (operatorsCount <= 2) {
+      this.setState((state) => ({
+        previousVal: value,
+        val: value,
+        formula: `${this.state.formula}` + `${value}`
+      }));
+    }
+    console.log("operator");
+    console.log(this.state);
+  }
+
+  handleDecimal(e) {
+    decimalsCount += 1;
+    const value = e.target.value;
+    const previousPlusCurrent = `${this.state.val}` + `${value}`;
+    if (decimalsCount <= 1) {
+      this.setState((state) => ({
+        val: previousPlusCurrent,
+        previousVal: parseFloat(this.state.val),
+        formula: `${this.state.formula}` + `${value}`
+      }));
+    }
+    console.log("decimal");
     console.log(this.state);
   }
 
   handleErase() {
+    operatorsCount = 0;
     const strToEraseLen = this.state.val.length;
     const currentFormula = `${this.state.formula}`;
     this.setState((state) => ({
       val: 0,
       formula: currentFormula.slice(0, - strToEraseLen)
     }));
+    console.log("erase");
     console.log(this.state);
   }
 
   clearAll() {
+    decimalsCount = 0;
     this.setState((state) => ({
       val: 0,
       previousVal: "",
       formula: ""
     }));
+    console.log("clearAll");
   }
 
   handleEqual() {
@@ -167,6 +209,7 @@ class App extends React.Component {
       val: eval(this.state.formula),
       formula: eval(this.state.formula)
     }))
+    console.log("equal");
   }
 
   render() {
@@ -177,6 +220,7 @@ class App extends React.Component {
         <Keypad
           handleNumber={this.handleNumber}
           handleOperator={this.handleOperator}
+          handleDecimal={this.handleDecimal}
           handleEqual={this.handleEqual}
           handleErase={this.handleErase}
           clearAll={this.clearAll}
