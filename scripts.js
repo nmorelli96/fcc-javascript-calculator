@@ -88,7 +88,9 @@ class Keypad extends React.Component {
 }
 
 let operatorsCount = 0;
+let subtractCount = 0;
 let decimalsCount = 0;
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -114,6 +116,7 @@ class App extends React.Component {
 
   handleNumber(e) {
     operatorsCount = 0;
+    subtractCount = 0;
     const operatorCheck = this.state.previousVal.toString();
     const output = document.getElementById("display").innerHTML;
     const value = e.target.value;
@@ -148,15 +151,20 @@ class App extends React.Component {
         formula: `${this.state.formula}` + `${value}`
       }));
     }
-    console.log(`number + ${value}`);
+    console.log(`number ${value}`);
     console.log(this.state);
   }
 
   handleOperator(e) {
-    decimalsCount = 0;
-    operatorsCount += 1;
     const value = e.target.value;
-    if (operatorsCount <= 2) {
+    decimalsCount = 0;
+    if (value.match(/[/*+]/)) {
+      operatorsCount += 1;
+    }
+    if (value.match(/-/)) {
+      subtractCount += 1;
+    }
+    if (operatorsCount <= 2 && subtractCount <= 2) {
       this.setState((state) => ({
         previousVal: value,
         val: value,
@@ -184,6 +192,7 @@ class App extends React.Component {
 
   handleErase() {
     operatorsCount = 0;
+    subtractCount = 0;
     const strToEraseLen = this.state.val.length;
     const currentFormula = `${this.state.formula}`;
     this.setState((state) => ({
@@ -205,11 +214,32 @@ class App extends React.Component {
   }
 
   handleEqual() {
-    this.setState((state) => ({
-      val: eval(this.state.formula),
-      formula: eval(this.state.formula)
-    }))
-    console.log("equal");
+    let formulaToAnalyze = this.state.formula;
+    let arrFormula = formulaToAnalyze.split("")
+    /*function analyze() {
+      for (let i = arrFormula.length - 1; i >= 0; i--) {
+        if (arrFormula[i].match(/[-/*+]/)) {
+          let operatorIndex = arrFormula.indexOf(arrFormula[i]);
+          //for (let j = arrFormula.slice(0, operatorIndex).length ; i >= 0 ; i--){
+          if (arrFormula[operatorIndex - 1].match(/[/*+]/)) {
+            arrFormula[operatorIndex - 1] = "";
+            analyze();
+          }
+        }
+      }
+      return arrFormula.join(" ");
+    }*/
+    console.log(formulaToAnalyze);
+    if (this.state.val.toString().match(/[0-9]/)) {
+      this.setState((state) => ({
+        //val: eval(analyze()), 
+        val: eval(this.state.formula),
+        //formula: eval(analyze())  
+        formula: eval(this.state.formula)
+      }))
+      console.log("equal");
+      console.log(this.state);
+    }
   }
 
   render() {
