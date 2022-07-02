@@ -1,4 +1,4 @@
-# JS Calc !
+# React.js Calc !
 
 A calculator created for learning purposes using HTML, CSS, JavaScript, Bootstrap and React.
 <br><br>
