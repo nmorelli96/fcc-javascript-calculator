@@ -44,61 +44,61 @@ class Keypad extends React.Component {
   render() {
     return (
       <div id='keypad'>
-        <button id="clear" value="AC" onClick={this.props.clearAll}>
+        <button id="clear" value="AC" data-key="Delete" onClick={this.props.clearAll}>
           AC
         </button>
-        <button id="erase" value="CE" onClick={this.props.handleErase}>
+        <button id="erase" value="CE" data-key="Backspace" onClick={this.props.handleErase}>
           CE
         </button>
-        <button id="divide" value="/" onClick={this.props.handleOperator}>
+        <button id="divide" value="/" data-key="/" onClick={this.props.handleOperator}>
           /
         </button>
-        <button id="multiply" value="*" onClick={this.props.handleOperator}>
+        <button id="multiply" value="*" data-key="*" onClick={this.props.handleOperator}>
           x
         </button>
-        <button id="seven" value="7" onClick={this.props.handleNumber}>
+        <button id="seven" value="7" data-key="7" onClick={this.props.handleNumber}>
           7
         </button>
-        <button id="eight" value="8" onClick={this.props.handleNumber}>
+        <button id="eight" value="8" data-key="8" onClick={this.props.handleNumber}>
           8
         </button>
-        <button id="nine" value="9" onClick={this.props.handleNumber}>
+        <button id="nine" value="9" data-key="9" onClick={this.props.handleNumber}>
           9
         </button>
-        <button id="subtract" value="-" onClick={this.props.handleOperator}>
+        <button id="subtract" value="-" data-key="-" onClick={this.props.handleOperator}>
           -
         </button>
-        <button id="four" value="4" onClick={this.props.handleNumber}>
+        <button id="four" value="4" data-key="4" onClick={this.props.handleNumber}>
           4
         </button>
-        <button id="five" value="5" onClick={this.props.handleNumber}>
+        <button id="five" value="5" data-key="5" onClick={this.props.handleNumber}>
           5
         </button>
-        <button id="six" value="6" onClick={this.props.handleNumber}>
+        <button id="six" value="6" data-key="6" onClick={this.props.handleNumber}>
           6
         </button>
-        <button id="add" value="+" onClick={this.props.handleOperator}>
+        <button id="add" value="+" data-key="+" onClick={this.props.handleOperator}>
           +
         </button>
-        <button id="one" value="1" onClick={this.props.handleNumber}>
+        <button id="one" value="1" data-key="1" onClick={this.props.handleNumber}>
           1
         </button>
-        <button id="two" value="2" onClick={this.props.handleNumber}>
+        <button id="two" value="2" data-key="2" onClick={this.props.handleNumber}>
           2
         </button>
-        <button id="three" value="3" onClick={this.props.handleNumber}>
+        <button id="three" value="3" data-key="3" onClick={this.props.handleNumber}>
           3
         </button>
-        <button id="equals" value="=" onClick={this.props.handleEqual}>
+        <button id="equals" value="=" data-key="Enter" onClick={this.props.handleEqual}>
           =
         </button>
-        <button id="zero" value="0" onClick={this.props.handleNumber}>
+        <button id="zero" value="0" data-key="0" onClick={this.props.handleNumber}>
           0
         </button>
         <button id="tripleZero" value="000" onClick={this.props.handleNumber}>
           000
         </button>
-        <button id="decimal" value="." onClick={this.props.handleDecimal}>
+        <button id="decimal" value="." data-key="." onClick={this.props.handleDecimal}>
           .
         </button>
       </div>
@@ -111,6 +111,8 @@ let subtractCount = 0;
 let decimalsCount = 0;
 let eraseCount = 0;
 let isResult = false;
+
+const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Delete', 'Backspace', 'Enter', '+', '-', '/', '*', '.'];
 
 class App extends React.Component {
   constructor(props) {
@@ -127,13 +129,22 @@ class App extends React.Component {
     this.handleEqual = this.handleEqual.bind(this);
     this.handleErase = this.handleErase.bind(this);
     this.clearAll = this.clearAll.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
-  /*componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyPress);
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
   }
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyPress);
-  }*/
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown(e) {
+    if (keys.includes(e.key)) {
+      document.querySelector(`[data-key='${e.key}']`).click();
+      e.preventDefault(); // Disables the quick search trigger when pressing '/'
+    }
+  }
 
   handleNumber(e) {
     operatorsCount = 0;
