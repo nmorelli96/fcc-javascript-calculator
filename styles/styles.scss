@@ -98,6 +98,11 @@ button:active {
   color: white;
 }
 
+#zero {
+  grid-column: 1/3;
+  grid-row: 5;
+}
+
 #equals {
   grid-row: 4/6;
   grid-column: 4;
