@@ -1,12 +1,12 @@
 const Title = function () {
   return (
-    <div id='title'><span id="react-span">React</span>.<span id="js-span">js</span>&nbsp;Calculator</div>
+    <div className="unselectable" id='title'><span id="react-span">React</span>.<span id="js-span">js</span>&nbsp;Calculator</div>
   );
 };
 
 const Footer = function () {
   return (
-    <div id='footer'> by &nbsp;
+    <div className="unselectable" id='footer'> by &nbsp;
       <a
         target="_blank"
         rel="noopener noreferrer"

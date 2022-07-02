@@ -118,4 +118,12 @@ button:active {
 #footer a {
   text-decoration: none;
   color: gold;
+}
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }/*# sourceMappingURL=styles.css.map */
