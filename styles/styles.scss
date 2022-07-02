@@ -1,9 +1,13 @@
 body {
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
   height: 100vh;
   background-color: black !important;
 }
 
 #app {
+  background-color: rgb(47, 50, 82);
   font-family: "Roboto Mono", sans-serif;
   border: 12px solid rgb(47, 50, 82);
   border-top: 0px;
@@ -32,7 +36,6 @@ body {
 #displayField {
   font-family: 'ds-digitalbold', sans-serif;
   letter-spacing: -1px;
-  max-width: 280px;
   min-height: 37px;
   background-color: lightgrey;
   text-align: right;
@@ -45,6 +48,7 @@ body {
   border-top-right-radius: 3px;
   color:rgb(104, 0, 0);
   font-size: 1.5rem;
+  box-shadow: 0px 1px 0px lightgray //fix chrome pixel rounding
 }
 
 #displayField {
@@ -63,6 +67,7 @@ body {
 button {
   border: none;
   background-color: rgb(230, 230, 230);
+  box-shadow: 0px 1px 0px rgb(230, 230, 230) //fix chrome pixel rounding
 }
 
 button:hover {
@@ -81,12 +86,14 @@ button:active {
 #divide {
   background-color: lightsalmon;
   font-size: 1.4rem;
+  box-shadow: 0px 1px 0px lightsalmon //fix chrome pixel rounding
 }
 
 #subtract,
 #add {
   font-size: 1.6rem;
   background-color: lightsalmon;
+  box-shadow: 0px 1px 0px lightsalmon //fix chrome pixel rounding
 }
 
 #add {
@@ -110,6 +117,7 @@ button:active {
   color: white;
   font-weight: 500;
   font-size: 1.6rem;
+  box-shadow: 0px 1px 0px darkgreen //fix chrome pixel rounding
 }
 
 #footer {
@@ -127,6 +135,36 @@ button:active {
     text-decoration: none;
     color: gold;
   }
+}
+
+@media (max-height: 480px) {
+  #app {
+    transform: scale(0.8);
+  };
+}
+
+@media (max-height: 640px) and (min-height: 481px) {
+  #app {
+    transform: scale(0.9);
+  };
+}
+
+@media (max-height: 1024px) and (min-height: 900px){
+  #app {
+    transform: scale(1.25);
+  };
+}
+
+@media (max-height: 1366px) and (min-height: 1025px){
+  #app {
+    transform: scale(1.50);
+  };
+}
+
+@media (min-height: 1367px){
+  #app {
+    transform: scale(2);
+  };
 }
 
 .unselectable {
