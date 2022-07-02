@@ -95,9 +95,6 @@ class Keypad extends React.Component {
         <button id="zero" value="0" data-key="0" onClick={this.props.handleNumber}>
           0
         </button>
-        <button id="tripleZero" value="000" onClick={this.props.handleNumber}>
-          000
-        </button>
         <button id="decimal" value="." data-key="." onClick={this.props.handleDecimal}>
           .
         </button>
@@ -111,6 +108,7 @@ let subtractCount = 0;
 let decimalsCount = 0;
 let eraseCount = 0;
 let isResult = false;
+let result = 0;
 
 const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Delete', 'Backspace', 'Enter', '+', '-', '/', '*', '.'];
 
@@ -156,48 +154,65 @@ class App extends React.Component {
     /*console.log(output)
     console.log(value)
     console.log(previousPlusCurrent)*/
-    if (operatorCheck.match(/[\/+*-]/) != null) {
-      //console.log('OPERATOR DETECTED')
-      this.setState((state) => ({
-        val: value,
-        previousVal: 0,
-        formula: `${this.state.formula}` + `${value}`
-      }));
-    }
-    else if (
-      ((value == 0 || value == "000") && this.state.val == 0) ||
-      ((value == 0 || value == "000") && isResult == true)) {
-      //impide meter ceros cuando no hay numeros
-      this.setState((state) => ({
-        val: 0,
-        formula: 0
-      }));
-      isResult = false;
-    }
-    else if (isResult == true) {
-      // evita ceros a la izquierda cuando escribimos un numero nuevo despues del =, y reinicia la formula
+    console.log(this.state.formula)
+    if (isResult == true) {
+      // prevents 0 on the left when we write a new number after equal, and restarts the formula
       this.setState((state) => ({
         val: value,
         previousVal: 0,
         formula: value
       }));
       isResult = false;
+      console.log('a');
+    }
+    else if ((this.state.formula === 0 || this.state.formula === "0") && value.match(/[1-9]/)) {
+      // prevents inserting 0 and then other number
+      this.setState((state) => ({
+        val: value,
+        previousVal: 0,
+        formula: value
+      }));
+      /*setTimeout(() => {
+        this.clearAll();
+      }, 1000);*/
+      console.log('eeee')
+    }
+    else if (operatorCheck.match(/[\/+*-]/) != null) {
+      this.setState((state) => ({
+        val: value,
+        previousVal: 0,
+        formula: `${this.state.formula}` + `${value}`
+      }));
+      console.log('b');
+    }
+    else if (
+      (value == 0 && this.state.val == 0) ||
+      (value == 0 && isResult == true)) {
+      // prevents the input of zeros when there's no numbers
+      this.setState((state) => ({
+        val: 0,
+        formula: 0
+      }));
+      isResult = false;
+      console.log('c');
     }
     else if (eraseCount > 0) {
-      //impide usar 2 veces consecutivas el CE
+      // prevents using 2 consecutive times the CE button
       this.setState((state) => ({
         val: value,
         formula: `${this.state.formula}` + `${value}`
       }));
       eraseCount = 0;
+      console.log('d');
     }
     else if (this.state.previousVal === "") {
-      //evita el 0 a la izq al escribir valores
+      //deletes the initial 0 on the left when input numbers
       this.setState((state) => ({
         val: value,
-        previousVal: parseInt(this.state.val, 10),
+        previousVal: this.state.val,
         formula: `${this.state.formula}` + `${value}`
       }));
+      console.log('e');
     }
     else {
       this.setState((state) => ({
@@ -205,6 +220,7 @@ class App extends React.Component {
         previousVal: parseInt(this.state.val, 10),
         formula: `${this.state.formula}` + `${value}`
       }));
+      console.log('f');
     }
     console.log(`number ${value}`);
     console.log(this.state);
@@ -212,21 +228,34 @@ class App extends React.Component {
 
   handleOperator(e) {
     const value = e.target.value;
-    isResult = false;
-    eraseCount = 0;
-    decimalsCount = 0;
-    if (value.match(/[/*+]/)) {
-      operatorsCount += 1;
-    }
-    if (value.match(/-/)) {
-      subtractCount += 1;
-    }
-    if (operatorsCount <= 2 && subtractCount <= 2) {
-      this.setState((state) => ({
-        previousVal: value,
-        val: value,
-        formula: `${this.state.formula}` + `${value}`
-      }));
+    console.log(result);
+    if (this.state.formula !== "") {
+      eraseCount = 0;
+      decimalsCount = 0;
+      if (isResult == true) {
+        // evita ceros a la izquierda cuando escribimos un numero nuevo despues del =, y reinicia la formula
+        this.setState((state) => ({
+          formula: `${result}` + `${value}`,
+          val: value,
+          previousVal: 0
+        }));
+        isResult = false;
+      }
+      else {
+        if (value.match(/[/*+]/)) {
+          operatorsCount += 1;
+        }
+        if (value.match(/-/)) {
+          subtractCount += 1;
+        }
+        if (operatorsCount <= 2 && subtractCount <= 2) {
+          this.setState((state) => ({
+            previousVal: value,
+            val: value,
+            formula: `${this.state.formula}` + `${value}`
+          }));
+        }
+      }
     }
     console.log("operator");
     console.log(this.state);
@@ -238,11 +267,24 @@ class App extends React.Component {
     const value = e.target.value;
     const previousPlusCurrent = `${this.state.val}` + `${value}`;
     if (decimalsCount <= 1) {
-      this.setState((state) => ({
-        val: previousPlusCurrent,
-        previousVal: parseFloat(this.state.val),
-        formula: `${this.state.formula}` + `${value}`
-      }));
+      if (isResult == true) {
+        // starts new calculation when input . after equal
+        this.clearAll();
+        isResult = false;
+        setTimeout(() => {
+          this.setState((state) => ({
+            val: value,
+            previousVal: parseFloat(this.state.val),
+            formula: `${this.state.formula}` + `${value}`
+          }));
+        }, 50);}
+      else {
+        this.setState((state) => ({
+          val: previousPlusCurrent,
+          previousVal: parseFloat(this.state.val),
+          formula: `${this.state.formula}` + `${value}`
+        }));
+      }
     }
     console.log("decimal");
     console.log(this.state);
@@ -285,27 +327,39 @@ class App extends React.Component {
       for (let i = arrFormula.length - 1; i >= 0; i--) {
         if (arrFormula[i].match(/[/*+]/) || arrFormula[i] == "") {
           let operatorIndex = arrFormula.lastIndexOf(arrFormula[i]);
-          //for (let j = arrFormula.slice(0, operatorIndex).length ; i >= 0 ; i--){
           if (arrFormula[operatorIndex - 1].match(/[-/*+]/)) {
             arrFormula[operatorIndex - 1] = "";
             analyze();
+          }
+        }
+        else if (arrFormula[i].match(/-/)) {
+          let operatorIndex = arrFormula.lastIndexOf(arrFormula[i]);
+          if (arrFormula[operatorIndex - 1] !== " ") {
+            arrFormula.splice(operatorIndex, 0, " ");
+            if (arrFormula[operatorIndex - 1] == "-") {
+              arrFormula.splice(operatorIndex - 1, 0, " ");
+            }
           }
         }
       }
       return arrFormula.join("");
     }
     console.log(formulaToAnalyze);
+    console.log(analyze());
     if (this.state.val.toString().match(/[0-9]/)) {
+      result = Math.round(1000000000000 * eval(analyze())) / 1000000000000;
       this.setState((state) => ({
-        val: eval(analyze()),
+        val: result,
         //val: eval(this.state.formula),
-        formula: eval(analyze())
+        formula: formulaToAnalyze
         //formula: eval(this.state.formula)
       }));
       isResult = true;
       console.log("equal");
       console.log(this.state);
+      console.log(isResult)
     }
+    decimalsCount = 0;
   }
 
   render() {
