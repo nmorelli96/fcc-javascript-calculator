@@ -40,14 +40,16 @@ body {
 }
 
 #formulaField {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
   color: rgb(104, 0, 0);
   font-size: 1.5rem;
 }
 
 #displayField {
+  border-bottom: 4px solid rgb(47, 50, 82);
   color: black;
   font-size: 2rem;
-  border-bottom: 4px solid rgb(47, 50, 82);
 }
 
 #keypad {
