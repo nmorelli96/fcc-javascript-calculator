@@ -165,6 +165,16 @@ class App extends React.Component {
       isResult = false;
       console.log('a');
     }
+    else if (this.state.val.length > 16 || this.state.formula.length > 22) {
+      this.setState((state) => ({
+        val: 'digit limit reached',
+        previousVal: 0,
+        formula: ""
+      }));
+      setTimeout(() => {
+        this.clearAll();
+      }, 1500);
+    }
     else if ((this.state.formula === 0 || this.state.formula === "0") && value.match(/[1-9]/)) {
       // prevents inserting 0 and then other number
       this.setState((state) => ({
@@ -172,9 +182,6 @@ class App extends React.Component {
         previousVal: 0,
         formula: value
       }));
-      /*setTimeout(() => {
-        this.clearAll();
-      }, 1000);*/
       console.log('eeee')
     }
     else if (operatorCheck.match(/[\/+*-]/) != null) {
@@ -277,7 +284,8 @@ class App extends React.Component {
             previousVal: parseFloat(this.state.val),
             formula: `${this.state.formula}` + `${value}`
           }));
-        }, 50);}
+        }, 50);
+      }
       else {
         this.setState((state) => ({
           val: previousPlusCurrent,
