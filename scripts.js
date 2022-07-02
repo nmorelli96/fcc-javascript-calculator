@@ -31,7 +31,7 @@ class Display extends React.Component {
   render() {
     return (
       <div id="displayField">
-        <span id="display">{this.props.val}</span>
+        <span id="display" onClick={copyToClipboard}>{this.props.val}</span>
       </div>
     );
   }
@@ -102,6 +102,14 @@ class Keypad extends React.Component {
     );
   }
 }
+
+const copyToClipboard = str => {
+  if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+    const valueToCopy = document.getElementById("display").innerHTML;
+    return navigator.clipboard.writeText(valueToCopy);
+  }
+  return Promise.reject('The Clipboard API is not available.');
+};
 
 let operatorsCount = 0;
 let subtractCount = 0;
