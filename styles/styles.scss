@@ -1,19 +1,123 @@
-body{
+body {
   height: 100vh;
+  background-color: black !important;
 }
 
-#formulaField, #displayField {
+#app {
+  font-family: "Roboto Mono", sans-serif;
+  border: 12px solid rgb(47, 50, 82);
+  border-top: 0px;
+  border-bottom: 0px;
+  border-radius: 5px;
+}
+
+#title {
+  background-color: rgb(47, 50, 82);
+  color: white;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: right;
+  padding-top: 3px;
+
+  #react-span {
+    color:cyan;
+  }
+  #js-span {
+    color: orange;
+  }
+}
+
+#formulaField,
+#displayField {
+  font-family: 'ds-digitalbold', sans-serif;
+  letter-spacing: -1px;
+  max-width: 280px;
+  min-height: 37px;
   background-color: lightgrey;
   text-align: right;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#formulaField {
+  color:rgb(104, 0, 0);
+  font-size: 1.5rem;
+}
+
+#displayField {
+  color: black;
+  font-size: 2rem;
+  border-bottom: 4px solid rgb(47, 50, 82);
 }
 
 #keypad {
   display: grid;
-  grid-template-columns: repeat(4, 50px);
-  grid-template-rows: repeat(5, 50px);
+  grid-template-columns: repeat(4, 70px);
+  grid-template-rows: repeat(5, 60px);
+  font-size: 1.2rem;
+}
 
-  #equals {
-    grid-row: 4/6;
-    grid-column: 4;
+button {
+  border: none;
+  background-color: rgb(230, 230, 230);
+}
+
+button:hover {
+  filter: brightness(0.9);
+}
+
+button:active {
+  filter: brightness(0.8);
+}
+
+#erase {
+  background-color: lightcoral;
+}
+
+#multiply,
+#divide {
+  background-color: lightsalmon;
+  font-size: 1.4rem;
+}
+
+#subtract,
+#add {
+  font-size: 1.6rem;
+  background-color: lightsalmon;
+}
+
+#add {
+  font-weight: 300;
+}
+
+#clear {
+  background-color: rgb(255, 50, 50);
+  color: white;
+}
+
+#equals {
+  grid-row: 4/6;
+  grid-column: 4;
+  background-color: darkgreen;
+  color: white;
+  font-weight: 500;
+  font-size: 1.6rem;
+}
+
+#footer {
+  background-color: rgb(47, 50, 82);
+  color: white;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-align: right;
+  padding-top: 2px;
+  padding-bottom: 3px;
+  text-shadow: 1px 1px 0 rgb(109, 109, 109);
+
+  a {
+    text-decoration: none;
+    color: gold;
   }
 }
