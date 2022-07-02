@@ -1,7 +1,26 @@
+const Title = function () {
+  return (
+    <div id='title'><span id="react-span">React</span>.<span id="js-span">js</span>&nbsp;Calculator</div>
+  );
+};
+
+const Footer = function () {
+  return (
+    <div id='footer'> by &nbsp;
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://github.com/nmorelli96/fcc-javascript-calculator"
+      >
+        nmorelli96 &nbsp;
+      </a> </div>
+  );
+};
+
 class Formula extends React.Component {
   render() {
     return (
-      <div id="formulaField">&nbsp;
+      <div id="formulaField">
         <span>{this.props.formula}</span>
       </div>
     );
@@ -35,7 +54,7 @@ class Keypad extends React.Component {
           /
         </button>
         <button id="multiply" value="*" onClick={this.props.handleOperator}>
-          X
+          x
         </button>
         <button id="seven" value="7" onClick={this.props.handleNumber}>
           7
@@ -90,6 +109,8 @@ class Keypad extends React.Component {
 let operatorsCount = 0;
 let subtractCount = 0;
 let decimalsCount = 0;
+let eraseCount = 0;
+let isResult = false;
 
 class App extends React.Component {
   constructor(props) {
@@ -132,12 +153,35 @@ class App extends React.Component {
         formula: `${this.state.formula}` + `${value}`
       }));
     }
-    else if ((value == 0 || value == '000') && this.state.val == 0) { //impide meter ceros cuando no hay numeros
+    else if (
+      ((value == 0 || value == "000") && this.state.val == 0) ||
+      ((value == 0 || value == "000") && isResult == true)) {
+      //impide meter ceros cuando no hay numeros
       this.setState((state) => ({
-        val: 0
+        val: 0,
+        formula: 0
       }));
+      isResult = false;
     }
-    else if (this.state.previousVal === "") { //evita el 0 a la izq al escribir valores
+    else if (isResult == true) {
+      // evita ceros a la izquierda cuando escribimos un numero nuevo despues del =, y reinicia la formula
+      this.setState((state) => ({
+        val: value,
+        previousVal: 0,
+        formula: value
+      }));
+      isResult = false;
+    }
+    else if (eraseCount > 0) {
+      //impide usar 2 veces consecutivas el CE
+      this.setState((state) => ({
+        val: value,
+        formula: `${this.state.formula}` + `${value}`
+      }));
+      eraseCount = 0;
+    }
+    else if (this.state.previousVal === "") {
+      //evita el 0 a la izq al escribir valores
       this.setState((state) => ({
         val: value,
         previousVal: parseInt(this.state.val, 10),
@@ -157,6 +201,8 @@ class App extends React.Component {
 
   handleOperator(e) {
     const value = e.target.value;
+    isResult = false;
+    eraseCount = 0;
     decimalsCount = 0;
     if (value.match(/[/*+]/)) {
       operatorsCount += 1;
@@ -176,6 +222,7 @@ class App extends React.Component {
   }
 
   handleDecimal(e) {
+    eraseCount = 0;
     decimalsCount += 1;
     const value = e.target.value;
     const previousPlusCurrent = `${this.state.val}` + `${value}`;
@@ -191,20 +238,27 @@ class App extends React.Component {
   }
 
   handleErase() {
+    eraseCount += 1;
     operatorsCount = 0;
     subtractCount = 0;
     const strToEraseLen = this.state.val.length;
     const currentFormula = `${this.state.formula}`;
-    this.setState((state) => ({
-      val: 0,
-      formula: currentFormula.slice(0, - strToEraseLen)
-    }));
+    if (eraseCount <= 1) {
+      this.setState((state) => ({
+        val: 0,
+        formula: currentFormula.slice(0, -strToEraseLen)
+      }));
+    }
     console.log("erase");
     console.log(this.state);
   }
 
   clearAll() {
+    eraseCount = 0;
     decimalsCount = 0;
+    operatorsCount = 0;
+    subtractCount = 0;
+    isResult = false;
     this.setState((state) => ({
       val: 0,
       previousVal: "",
@@ -215,28 +269,29 @@ class App extends React.Component {
 
   handleEqual() {
     let formulaToAnalyze = this.state.formula;
-    let arrFormula = formulaToAnalyze.split("")
-    /*function analyze() {
+    let arrFormula = formulaToAnalyze.split("");
+    function analyze() {
       for (let i = arrFormula.length - 1; i >= 0; i--) {
-        if (arrFormula[i].match(/[-/*+]/)) {
-          let operatorIndex = arrFormula.indexOf(arrFormula[i]);
+        if (arrFormula[i].match(/[/*+]/) || arrFormula[i] == "") {
+          let operatorIndex = arrFormula.lastIndexOf(arrFormula[i]);
           //for (let j = arrFormula.slice(0, operatorIndex).length ; i >= 0 ; i--){
-          if (arrFormula[operatorIndex - 1].match(/[/*+]/)) {
+          if (arrFormula[operatorIndex - 1].match(/[-/*+]/)) {
             arrFormula[operatorIndex - 1] = "";
             analyze();
           }
         }
       }
-      return arrFormula.join(" ");
-    }*/
+      return arrFormula.join("");
+    }
     console.log(formulaToAnalyze);
     if (this.state.val.toString().match(/[0-9]/)) {
       this.setState((state) => ({
-        //val: eval(analyze()), 
-        val: eval(this.state.formula),
-        //formula: eval(analyze())  
-        formula: eval(this.state.formula)
-      }))
+        val: eval(analyze()),
+        //val: eval(this.state.formula),
+        formula: eval(analyze())
+        //formula: eval(this.state.formula)
+      }));
+      isResult = true;
       console.log("equal");
       console.log(this.state);
     }
@@ -245,6 +300,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <Title />
         <Formula formula={this.state.formula} />
         <Display val={this.state.val} />
         <Keypad
@@ -255,6 +311,7 @@ class App extends React.Component {
           handleErase={this.handleErase}
           clearAll={this.clearAll}
         />
+        <Footer />
       </div>
     );
   }
