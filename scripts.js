@@ -10,7 +10,7 @@ const Footer = function () {
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="https://github.com/nmorelli96/fcc-javascript-calculator"
+        href="https://github.com/nmorelli96/"
       >
         nmorelli96 &nbsp;
       </a> </div>
