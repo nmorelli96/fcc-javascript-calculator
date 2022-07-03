@@ -126,13 +126,15 @@ button:active {
   font-size: 0.75rem;
   font-weight: 400;
   text-align: right;
-  padding-top: 2px;
+  padding-top: 4px;
   padding-bottom: 3px;
-  text-shadow: 1px 1px 0 rgb(109, 109, 109);
 }
 #footer a {
   text-decoration: none;
   color: gold;
+}
+#footer a:hover {
+  color: goldenrod;
 }
 
 @media (max-height: 480px) {
